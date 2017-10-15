@@ -1,0 +1,27 @@
+<script>
+	// var arr = [1,2,3,4];
+	// arr.reverse();
+	// console.log(arr);
+	function reverseArray(arr) {
+		var arr_t = [];
+		for(var i=arr.length-1;i>=0;i--)
+			arr_t.push(arr[i]);
+		return arr_t;
+	}//返回逆序，原数组不变
+
+	function reverseArrayInPlace(arr) {
+		for(var i=0;i<arr.length/2;i++){
+			var t=arr[i];
+			arr[i]=arr[arr.length-i-1];
+			arr[arr.length-i-1]=t;
+		}
+		return arr;
+	}//返回逆序，原数组变
+
+	var arr = [1,2,3,4];
+
+	console.log("函数返回结果是"+reverseArray(arr));
+	// console.log("函数返回结果是"+reverseArrayInPlace(arr));
+	console.log("原数组变成"+arr);
+	
+</script>

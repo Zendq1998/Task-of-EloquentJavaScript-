@@ -1,0 +1,17 @@
+<script>
+ function range(start, end, step=1) {
+ 	var arr = [];
+ 	for(var i=start;i<=end;i+=step)
+ 		arr.push(i);
+ 	return arr;
+ }
+
+ function sum(arr) {
+ 	var n = 0;
+ 	for(var i=0;i<arr.length;i++)
+ 		n+=arr[i];
+ 	return n;
+ }
+
+ console.log(sum(range(1,10)));
+</script>
