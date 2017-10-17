@@ -1,0 +1,40 @@
+<script>
+function deepEqual(ob1,ob2) {
+	if(typeof(ob1)!="object"&&typeof(ob2)!="object"){
+		if(ob1===ob2)
+			return ture;
+		else
+			return false;
+	}
+
+	else return deepEqual(Object.keys(ob1),Object.keys(ob2));
+}
+
+var a = {
+	value:1,
+	rest:2
+}
+
+var b = {
+	value:1,
+	rest:2
+}
+
+// var a = {
+// 	value:1,rest{
+// 		value:2,rest{
+// 			value:3,rest:{}
+// 		}
+// 	}
+// }
+// var b = {
+// 	value:1,rest{
+// 		value:2,rest{
+// 			value:3,rest:null
+// 		}
+// 	}
+// }
+
+console.log(deepEqual(a,b))
+
+</script>

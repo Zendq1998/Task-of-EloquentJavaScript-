@@ -1,0 +1,48 @@
+<script>
+var list = {
+	value:1,
+	rest:{
+		value:2,
+		rest:{
+			value:3,
+			rest:null
+		}
+	}
+}
+function arrayToList(arr) {
+	var list = null;
+	for(var i=arr.length-1;i>=0;i--){
+		var list_t = {value:arr[i],rest:list};
+		list = list_t;
+	}
+	return list;
+}
+// console.log(arrayToList([1,2,3]));
+
+function listToArray(list) {
+	var arr = [];
+	list_t = list;
+	while(list_t!=null){
+		arr.push(list_t.value);
+		list_t=list_t.rest;
+	}
+	return arr;
+}
+
+function prepend(elm,list) {
+	return {value:elm,rest:list};
+}
+
+function nth(elm,list,th=1){
+	if(list==null)
+		return undefined;
+	if(elm==list.value)
+		return th;
+	if(elm!=list.value)
+		return nth(elm,list.rest,th+1);
+}
+
+console.log(prepend(0,list));
+console.log(nth(4,list));
+console.log(listToArray(arrayToList([1,2,3])));
+</script>
