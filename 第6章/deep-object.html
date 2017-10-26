@@ -1,0 +1,50 @@
+<script>
+var rabbit = {};
+rabbit.speak = function(line){
+	console.log("The rabbit says '"+line+"'");
+};
+rabbit.speak("I'm alive");
+
+function speak(line){
+	console.log("The "+this.type+" rabbit says '"+line+"'");
+}
+
+var whiteRabit = {type:"white",speak:speak};
+var fatRabit = {type:"fat",speak:speak};
+
+whiteRabit.speak("I'm alive");
+fatRabit.speak("I'm died");
+
+var empty={};
+console.log(empty.toString());
+//[object Object]
+//空对象的原型提供了一些可以在所有对象中使用的方法，比如说toString方法
+console.log(empty.toString);
+//function toString(){...}
+
+console.log(Object.getPrototypeOf([]));
+//Object.getPrototypeOf()函数返回空对象的原型，即Object.prototype
+
+
+var protoRabbit = {
+	speak:function(line) {
+		// body...
+		console.log("The "+this.type+" rabbit says '"+line+"'");
+	}
+};//原型对象proRabbit是一个容器，用于包含所有兔子对象的共有属性。
+
+var killerRabbit=Object.create(protoRabbit);
+//用protoRabbit这个特殊的原型来使用Object.create方法创造一个独有的对象
+killerRabbit.type = "killer";
+//每个独立的对象可以包含其自身属性
+killerRabbit.speak("skeee!");
+
+function Rabbit(type) {
+	// body...
+	this.type=type;
+}
+var blackRabbit = new Rabbit("black");
+console.log(blackRabbit);
+
+//对于构造函数来说，都会自动获得一个名为prototype的属性。在默认的情况下，该属性是一个普通的派生自Object.prototype的空对象
+</script>

@@ -1,0 +1,26 @@
+<script>
+function every(arr,f){
+	for(var i=0;i<arr.length;i++){
+		if(!f(arr[i]))
+			return false;
+	}
+	return true;
+}
+
+function some(arr,f){
+	for(var i=0;i<arr.length;i++){
+		if(f(arr[i]))
+			return true;
+	}
+	return false;
+}
+
+var arr = [1,2,5,7,9];
+
+function is_even(a){
+	return a%2==0;
+};
+
+console.log(every(arr,is_even));
+console.log(some(arr,is_even));
+</script>

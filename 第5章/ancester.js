@@ -1,5 +1,4 @@
-<script>
-	var ANCESTRY_FILE = JSON.stringify([
+var ANCESTRY_FILE = JSON.stringify([
   {"name": "Carolus Haverbeke", "sex": "m", "born": 1832, "died": 1905, "father": "Carel Haverbeke", "mother": "Maria van Brussel"},
   {"name": "Emma de Milliano", "sex": "f", "born": 1876, "died": 1956, "father": "Petrus de Milliano", "mother": "Sophia van Damme"},
   {"name": "Maria de Rycke", "sex": "f", "born": 1683, "died": 1724, "father": "Frederik de Rycke", "mother": "Laurentia van Vlaenderen"},
@@ -45,31 +44,3 @@
 // `require("./path/to/ancestry.js")` will get you the array.
 if (typeof module != "undefined" && module.exports)
   module.exports = ANCESTRY_FILE;
-
-function average(arr) {
-	function plus(a,b) {
-		return a+b;
-	}
-	return arr.reduce(plus)/arr.length;
-}//求平均数
-
-var byNname={}
-ancestry.forEach(function(person){
-	byNname[person.name]=person;
-})//创建byName对象
-
-function agedif(person){
-	if(byNname[person.mother]==null)
-		return false;
-	return person.born-byNname[person.mother].born;
-}
-
-var dif=[];
-ancestry.forEach(function(person){
-	if(agedif(person))
-		dif.push(agedif(person));
-
-})
-console.log(average(dif));
-
-</script>

@@ -1,0 +1,47 @@
+<script type="text/javascript" src="ancester.js"></script>
+
+<script>
+var ancestry = JSON.parse(ANCESTRY_FILE);
+
+console.log(ancestry);
+
+function century(person){
+	return Math.ceil(person.died/100);
+}//传入一个祖先的对象，返回他所在的世纪
+
+function age(person) {
+	return person.died-person.born;
+}//返回祖先的年龄
+
+function average(arr) {
+	function plus(a,b) {
+		return a+b;
+	}
+	return arr.reduce(plus)/arr.length;
+}//求平均数//传入一个一维数组返回平均值
+
+console.log(average([1,2,3]));
+
+var ageBycentury = {};
+ancestry.forEach(function(person){
+	if(agefunction average(arr) {
+	function plus(a,b) {
+		return a+b;
+	}
+	return arr.reduce(plus)/arr.length;
+}//求平均数Bycentury[century(person)]==null)
+		ageBycentury[century(person)]=[age(person)];
+	else ageBycentury[century(person)].push(age(person));
+})//创建世纪-年龄的对象
+
+console.log(ageBycentury);
+
+var ave_ageByCentury = {};
+
+for(var century in ageBycentury){
+	ave_ageByCentury[century]=average(ageBycentury[century]);
+}
+
+console.log(ave_ageByCentury);
+
+</script>

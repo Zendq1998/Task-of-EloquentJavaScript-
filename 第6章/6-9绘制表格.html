@@ -1,0 +1,189 @@
+<script>
+function TextCell(text){
+	this.text = text.split("\n");
+	//遇到换行将字符串text分割成数组存在Text.text数组里面
+}
+
+TextCell.prototype.minWidth = function(){
+	return this.text.reduce(function(width,line){
+		return Math.max(width,line.length);
+	},0);//求出textCell对象的text数组中元素的最大长度，即能容纳一个text数组的最小宽度
+};
+
+TextCell.prototype.minHeight = function(){
+	return this.text.length;
+};//求出text数组的长度，即text数组的元素个数，即能容纳一个text数组的最小高度（一个元素占一个高度）
+
+function repeat(string, times) {
+  var result = "";
+  for (var i = 0; i < times; i++)
+    result += string;
+  return result;
+}
+//返回一个string重复了times次的字符串
+
+TextCell.prototype.draw = function(width, height){
+	var result = [];
+	for (var i=0;i<height;i++){
+		var line = this.text[i]||"";//若text[i]不存在了，给line赋空值
+		result.push(line+repeat(" ", width-line.length));
+	}
+	return result;
+};//返回一个长度为height的字符串数组，数组中的每个元素是调用改函数的TextCell对象的text数组元素，元素的长度都是width（元素长度不够补空格，元素个数不够补长度为width的空格）
+
+TextCell.prototype.draw = function(width, height) {
+  var result = [];
+  for (var i = 0; i < height; i++) {
+    var line = this.text[i] || "";
+    result.push(line + repeat(" ", width - line.length));
+  }
+  return result;
+};
+
+function rowHeights(rows) {
+	return rows.map(function(row){//逐行处理rows二维数组
+		return row.reduce(function(max,cell){//对一维数组row中的textcell对象进行reduce数据总汇
+			return Math.max(max,cell.minHeight());//
+		},0);//一行总汇完返回该行最高的textcell对象的高度
+	})//每一行的最大高度保存在数组中，返回该数组
+};
+
+function colWidths(rows){//遍历第一行的元素，即遍历每一列
+	return rows[0].map(function(_, i){
+	//i表示数组遍历的当前元素的引索编号
+		return rows.reduce(function(max,row){
+			return Math.max(max,row[i].minWidth());
+		},0);//对每一行的引索值为i的元素进行reduce汇总，求这一列的Textcell元素的最大宽度
+	});//每一列的最大宽度保存在数组中，返回该数组
+}
+
+
+//绘制表格
+function drawTable(rows){
+	var heights = rowHeights(rows);//存储行高的数组
+	var widths = colWidths(rows);//存储列宽的数组
+
+	function drawLine(blocks, lineNo){//一个大行blocks，lineNo是大行中的小行号
+		return blocks.map(function(block){//遍历大行blocks中的小块block
+			return block[lineNo];//返回每一小块block的小行号为lineNo的字符串元素
+		}).join(" ");//map得到的数组，存储上面返回的字符串元素，然后相邻的元素用空格join连接起来转化为字符串，返回该字符串
+	}//返回表示一小行的字符串
+
+	function drawRow(row, rowNum){
+		var blocks = row.map(function(cell,colNum){//对一行row遍历，把row转化为blocks
+			return cell.draw(widths[rowNum],heights[colNum]);
+		});//对遍历的每一个textcell对象转化为长度相同的字符串数组block（一行的高度相同），每个数组block中的字符串长度相同（一列的宽度相同）
+
+		return blocks[0].map(function(_,lineNo){//遍历第一个小块，小行号为lineNo
+			return drawLine(blocks, lineNo);//返回表示大行blocks的小行lineNo的字符串
+		}).join("\n");//每一小行的字符串存入数组再用换行连接成字符串
+	}//返回表示一大行row的字符串
+
+	return rows.map(drawRow).join("\n");//对整个二维数组rows遍历row，每次遍历得到表示该row的字符串，存储进map数组，最后用换行连接成最终的字符串。
+}
+
+
+
+//创建5x5的棋盘
+var rows = [];
+for(var i=0;i<5;i++){
+	var row = [];
+	for(var j=0;j<5;j++){
+		if ((j+i)%2==0) 
+			row.push(new TextCell("##"));
+		else
+			row.push(new TextCell("  "));
+	}
+	rows.push(row);
+}
+console.log(drawTable(rows));//测试drwaTable函数
+
+var MOUNTAINS = [
+  {name: "Kilimanjaro", height: 5895, country: "Tanzania"},
+  {name: "Everest", height: 8848, country: "Nepal"},
+  {name: "Mount Fuji", height: 3776, country: "Japan"},
+  {name: "Mont Blanc", height: 4808, country: "Italy/France"},
+  {name: "Vaalserberg", height: 323, country: "Netherlands"},
+  {name: "Denali", height: 6168, country: "United States"},
+  {name: "Popocatepetl", height: 5465, country: "Mexico"}
+];//有关山脉的数据
+
+if (typeof module != "undefined" && module.exports)
+  module.exports = MOUNTAINS;
+
+// function UnderlinedCell(inner){
+// 	this.inner = inner;
+// };
+
+// UnderlinedCell.prototype.minWidth = function(){
+// 	return this.inner.minWidth();
+// };
+// UnderlinedCell.prototype.minHeight = function(){
+// 	return this.inner.minHeight()+1;
+// };
+
+// UnderlinedCell.prototype.draw = function(width,height){
+// 	return this.inner.draw(width,height-1).concat([repeat("-",width)]);
+// }
+
+// function dataTable(data){
+// 	var keys = Object.keys(data[0]);
+// 	var headers = keys.map(function(name){
+// 		return new UnderlinedCell(new TextCell(name));
+// 	});
+// 	var body = data.map(function(row){
+// 		return keys.map(function(name){
+// 			return new TextCell(String(row[name]));
+// 		});
+// 	});
+// 	return [headers].concat(body);
+// }
+
+function UnderlinedCell(inner) {
+  this.inner = inner;
+}
+UnderlinedCell.prototype.minWidth = function() {
+  return this.inner.minWidth();
+};
+UnderlinedCell.prototype.minHeight = function() {
+  return this.inner.minHeight() + 1;
+};
+UnderlinedCell.prototype.draw = function(width, height) {
+  return this.inner.draw(width, height - 1)
+    .concat([repeat("-", width)]);
+};
+
+function RTextCell(text) {
+  TextCell.call(this, text);
+}
+RTextCell.prototype = Object.create(TextCell.prototype);
+RTextCell.prototype.draw = function(width, height) {
+  var result = [];
+  for (var i = 0; i < height; i++) {
+    var line = this.text[i] || "";
+    result.push(repeat(" ", width - line.length) + line);
+  }
+  return result;
+};
+
+function dataTable(data) {
+  var keys = Object.keys(data[0]);
+  var headers = keys.map(function(name) {
+    return new UnderlinedCell(new TextCell(name));
+  });
+  var body = data.map(function(row) {
+    return keys.map(function(name) {
+      var value = row[name];
+      // This was changed:
+      if (typeof value == "number")
+        return new RTextCell(String(value));
+      else
+        return new TextCell(String(value));
+    });
+  });
+  return [headers].concat(body);
+}
+
+
+console.log(drawTable(dataTable(MOUNTAINS)));
+</script>
