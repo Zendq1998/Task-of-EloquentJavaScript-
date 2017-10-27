@@ -31,14 +31,14 @@ TextCell.prototype.draw = function(width, height){
 	return result;
 };//返回一个长度为height的字符串数组，数组中的每个元素是调用改函数的TextCell对象的text数组元素，元素的长度都是width（元素长度不够补空格，元素个数不够补长度为width的空格）
 
-TextCell.prototype.draw = function(width, height) {
-  var result = [];
-  for (var i = 0; i < height; i++) {
-    var line = this.text[i] || "";
-    result.push(line + repeat(" ", width - line.length));
-  }
-  return result;
-};
+// TextCell.prototype.draw = function(width, height) {
+//   var result = [];
+//   for (var i = 0; i < height; i++) {
+//     var line = this.text[i] || "";
+//     result.push(line + repeat(" ", width - line.length));
+//   }
+//   return result;
+// };
 
 function rowHeights(rows) {
 	return rows.map(function(row){//逐行处理rows二维数组
@@ -71,16 +71,22 @@ function drawTable(rows){
 
 	function drawRow(row, rowNum){
 		var blocks = row.map(function(cell,colNum){//对一行row遍历，把row转化为blocks
-			return cell.draw(widths[rowNum],heights[colNum]);
-		});//对遍历的每一个textcell对象转化为长度相同的字符串数组block（一行的高度相同），每个数组block中的字符串长度相同（一列的宽度相同）
+			return cell.draw(widths[colNum],heights[rowNum]);
+		});//对遍历的每一个textcell对象转化为长度相同的字符串数组block（一行的高度相同），每个数组block中的字符串长度相同（一列的宽度相同）第rowNum行的长度，第colNum列的宽度
 
 		return blocks[0].map(function(_,lineNo){//遍历第一个小块，小行号为lineNo
 			return drawLine(blocks, lineNo);//返回表示大行blocks的小行lineNo的字符串
 		}).join("\n");//每一小行的字符串存入数组再用换行连接成字符串
 	}//返回表示一大行row的字符串
 
+
 	return rows.map(drawRow).join("\n");//对整个二维数组rows遍历row，每次遍历得到表示该row的字符串，存储进map数组，最后用换行连接成最终的字符串。
 }
+
+
+
+
+
 
 
 
@@ -111,46 +117,20 @@ var MOUNTAINS = [
 if (typeof module != "undefined" && module.exports)
   module.exports = MOUNTAINS;
 
-// function UnderlinedCell(inner){
-// 	this.inner = inner;
-// };
 
-// UnderlinedCell.prototype.minWidth = function(){
-// 	return this.inner.minWidth();
-// };
-// UnderlinedCell.prototype.minHeight = function(){
-// 	return this.inner.minHeight()+1;
-// };
-
-// UnderlinedCell.prototype.draw = function(width,height){
-// 	return this.inner.draw(width,height-1).concat([repeat("-",width)]);
-// }
-
-// function dataTable(data){
-// 	var keys = Object.keys(data[0]);
-// 	var headers = keys.map(function(name){
-// 		return new UnderlinedCell(new TextCell(name));
-// 	});
-// 	var body = data.map(function(row){
-// 		return keys.map(function(name){
-// 			return new TextCell(String(row[name]));
-// 		});
-// 	});
-// 	return [headers].concat(body);
-// }
 
 function UnderlinedCell(inner) {
-  this.inner = inner;
+  this.inner = inner;//下划线类型的单元格，inner里面是TextCell单元格对象
 }
 UnderlinedCell.prototype.minWidth = function() {
-  return this.inner.minWidth();
+  return this.inner.minWidth();//带下划线单元格的最小宽度和TextCell宽度相等，可以直接调用inner的minWidth()
 };
 UnderlinedCell.prototype.minHeight = function() {
-  return this.inner.minHeight() + 1;
+  return this.inner.minHeight() + 1;//因为有下划线，高度比TextCell大一个
 };
 UnderlinedCell.prototype.draw = function(width, height) {
-  return this.inner.draw(width, height - 1)
-    .concat([repeat("-", width)]);
+  return this.inner.draw(width, height - 1)//先把一个TextCell单元格表示好，成长度宽度确定好的数组
+    .concat([repeat("-", width)]);//这个数组的末尾再添加下划线，数组长度加一，带下划线的单元格画好
 };
 
 function RTextCell(text) {
@@ -167,13 +147,13 @@ RTextCell.prototype.draw = function(width, height) {
 };
 
 function dataTable(data) {
-  var keys = Object.keys(data[0]);
+  var keys = Object.keys(data[0]);//data[0]是第一个山脉对象，调用标准Object.keys，返回一个数组，存储了这个对象的所有属性名称
   var headers = keys.map(function(name) {
     return new UnderlinedCell(new TextCell(name));
-  });
-  var body = data.map(function(row) {
-    return keys.map(function(name) {
-      var value = row[name];
+  });//遍历属性名数组，先存在TextCell里面，整个TextCell再存到UnderlinedCell的inner里面。
+  var body = data.map(function(row) {//对整个山脉信息进行遍历
+    return keys.map(function(name) {//对每一行的属性进行遍历
+      var value = row[name];//把对应行的对应属性的值赋值给value
       // This was changed:
       if (typeof value == "number")
         return new RTextCell(String(value));
